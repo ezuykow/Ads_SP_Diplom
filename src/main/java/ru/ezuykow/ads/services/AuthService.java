@@ -1,44 +1,55 @@
 package ru.ezuykow.ads.services;
 
-import org.springframework.security.core.userdetails.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.ezuykow.ads.dto.RegisterReq;
 import ru.ezuykow.ads.dto.Role;
+import ru.ezuykow.ads.entities.User;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-  private final UserDetailsManager manager;
+    private final UserDetailsManager manager;
+    private final PasswordEncoder encoder;
+    private final UserService userService;
 
-  private final PasswordEncoder encoder;
+    public boolean login(String userName, String password) {
+        if (!manager.userExists(userName)) {
+            User targetUser = userService.findUserByEmail(userName);
+            if (targetUser == null || !targetUser.getEncodedPassword().equals(String.valueOf(password.hashCode()))) {
+                return false;
+            }
+            manager.createUser(
+                    org.springframework.security.core.userdetails.User.builder()
+                            .passwordEncoder(this.encoder::encode)
+                            .password(password)
+                            .username(userName)
+                            .roles(targetUser.getRole())
+                            .build());
+        }
 
-  public AuthService(UserDetailsManager manager, PasswordEncoder passwordEncoder) {
-    this.manager = manager;
-    this.encoder = passwordEncoder;
-  }
-
-  public boolean login(String userName, String password) {
-    if (!manager.userExists(userName)) {
-      return false;
+        UserDetails userDetails = manager.loadUserByUsername(userName);
+        return encoder.matches(password, userDetails.getPassword());
     }
-    UserDetails userDetails = manager.loadUserByUsername(userName);
-    return encoder.matches(password, userDetails.getPassword());
-  }
 
-  public boolean register(RegisterReq registerReq, Role role) {
-    if (manager.userExists(registerReq.getUsername())) {
-      return false;
+    public boolean register(RegisterReq registerReq, Role role) {
+        if (manager.userExists(registerReq.getUsername())) {
+            return false;
+        }
+        manager.createUser(
+                org.springframework.security.core.userdetails.User.builder()
+                        .passwordEncoder(this.encoder::encode)
+                        .password(registerReq.getPassword())
+                        .username(registerReq.getUsername())
+                        .roles(role.name())
+                        .build());
+
+        userService.saveUserFromRegReq(registerReq, role, registerReq.getPassword());
+
+        return true;
     }
-    manager.createUser(
-        User.builder()
-            .passwordEncoder(this.encoder::encode)
-            .password(registerReq.getPassword())
-            .username(registerReq.getUsername())
-            .roles(role.name())
-            .build());
-    return true;
-  }
 }

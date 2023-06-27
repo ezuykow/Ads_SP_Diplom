@@ -29,7 +29,7 @@ public class AuthController {
         if (authService.login(req.getUsername(), req.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
         }
     }
 
@@ -37,7 +37,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();
         if (authService.register(req, role)) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.status(201).body("Created");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

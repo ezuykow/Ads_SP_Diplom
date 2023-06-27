@@ -39,3 +39,4 @@ build/
 /generated-requests.http
 /openapi.yaml
 /.idea/
+/avatars/username.png
