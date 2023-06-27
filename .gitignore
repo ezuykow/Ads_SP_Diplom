@@ -40,3 +40,4 @@ build/
 /openapi.yaml
 /.idea/
 /avatars/username.png
+/src/main/resources/application-test.properties
