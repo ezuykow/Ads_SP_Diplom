@@ -1,12 +1,16 @@
 package ru.ezuykow.ads.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author ezuykow
  */
 @Data
-public class Comment {
+@AllArgsConstructor
+@NoArgsConstructor
+public class FullCommentDto {
 
     private Integer author;
     private String authorImage;

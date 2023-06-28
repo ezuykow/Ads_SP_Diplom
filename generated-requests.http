@@ -1,0 +1,155 @@
+###
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{
+  "username": "username",
+  "password": "password",
+  "firstName": "firstName",
+  "lastName": "lastName",
+  "phone": "phone",
+  "role": "USER"
+}
+
+###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "username",
+  "password": "password"
+}
+
+###
+GET http://localhost:8080/users/me
+Content-Type: application/json
+Authorization: Basic username password
+
+###
+PATCH http://localhost:8080/users/me
+Content-Type: application/json
+Authorization: Basic username password
+
+{
+  "phone": "33333",
+  "lastName": "Ivanov",
+  "firstName": "Ivan",
+  "email": "username",
+  "id": 1
+}
+
+###
+POST http://localhost:8080/users/set_password
+Content-Type: application/json
+Authorization: Basic username password1
+
+{
+  "newPassword": "password1",
+  "currentPassword": "password"
+}
+
+###
+PATCH http://localhost:8080/users/me/image
+Content-Type: multipart/form-data; boundary=UserImageBoundary
+Authorization: Basic username password
+
+--UserImageBoundary
+Content-Disposition: form-data; name="image"; filename="testImage.png"
+Content-Type: image/png
+
+< testImage.png
+--UserImageBoundary
+
+###
+GET http://localhost:8080/ads
+Content-Type: application/json
+
+###
+POST http://localhost:8080/ads
+Content-Type: multipart/form-data; boundary=AddAdBoundary
+Authorization: Basic username password
+
+--AddAdBoundary
+Content-Disposition: form-data; name="image"; filename="testImage.png"
+Content-Type: image/png
+
+< testImage.png
+--AddAdBoundary
+Content-Disposition: form-data; name="properties"
+Content-Type: application/json
+
+{
+  "description": "description",
+  "price": 1234,
+  "title": "title"
+}
+--AddAdBoundary
+
+###
+GET http://localhost:8080/ads/1
+Content-Type: application/json
+Authorization: Basic username password
+
+###
+DELETE http://localhost:8080/ads/2
+Content-Type: application/json
+Authorization: Basic username password
+
+###
+PATCH http://localhost:8080/ads/1
+Content-Type: application/json
+Authorization: Basic username password
+
+{
+  "description": "new description",
+  "price": 7777,
+  "title": "new title"
+}
+
+###
+GET http://localhost:8080/ads/me
+Content-Type: application/json
+Authorization: Basic username password
+
+###
+PATCH http://localhost:8080/ads/1/image
+Content-Type: multipart/form-data; boundary=NewAdImageBoundary
+Authorization: Basic username password
+
+--NewAdImageBoundary
+Content-Disposition: form-data; name="image"; filename="testImage.png"
+Content-Type: image/png
+
+< testImage.png
+--NewAdImageBoundary
+
+###COMMENTS
+POST http://localhost:8080/ads/1/comments
+Content-Type: application/json
+Authorization: Basic username password
+
+{
+  "text": "first comment"
+}
+
+###
+GET http://localhost:8080/ads/1/comments
+Authorization: Basic username password
+
+###
+DELETE http://localhost:8080/ads/1/comments/3
+Authorization: Basic username password
+
+###
+PATCH http://localhost:8080/ads/1/comments/3
+Content-Type: application/json
+Authorization: Basic username password
+
+{
+  "author": 0,
+  "authorImage": "string",
+  "authorFirstName": "string",
+  "createdAt": 0,
+  "pk": 0,
+  "text": "fgfjjf"
+}

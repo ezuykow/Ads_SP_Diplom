@@ -6,7 +6,7 @@ import lombok.Data;
  * @author ezuykow
  */
 @Data
-public class CreateComment {
+public class CreateCommentDto {
 
     private String text;
 }

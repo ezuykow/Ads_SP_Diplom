@@ -32,6 +32,7 @@ public class AdService {
     private final AdRepository repository;
     private final AdMapper adMapper;
     private final UserService userService;
+    private final CommentService commentService;
 
     //-----------------API START-----------------
 
@@ -89,6 +90,7 @@ public class AdService {
     }
 
     public void deleteById(int id) {
+        commentService.deleteAllByAdId(id);
         repository.deleteById(id);
     }
 
