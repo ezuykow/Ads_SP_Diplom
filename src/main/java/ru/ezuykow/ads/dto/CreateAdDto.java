@@ -6,7 +6,7 @@ import lombok.Data;
  * @author ezuykow
  */
 @Data
-public class CreateAds {
+public class CreateAdDto {
 
     private String description;
     private Integer price;

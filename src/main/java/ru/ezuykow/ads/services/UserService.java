@@ -11,6 +11,7 @@ import ru.ezuykow.ads.dto.RegisterReq;
 import ru.ezuykow.ads.dto.Role;
 import ru.ezuykow.ads.dto.UserDto;
 import ru.ezuykow.ads.entities.User;
+import ru.ezuykow.ads.exceptions.NonExistentUserException;
 import ru.ezuykow.ads.mappers.UserMapper;
 import ru.ezuykow.ads.repositories.UserRepository;
 
@@ -42,6 +43,10 @@ public class UserService {
         save(targetUser);
 
         manager.changePassword(newPasswordDto.getCurrentPassword(), newPasswordDto.getNewPassword());
+    }
+
+    public User findById(int id) {
+        return repository.findById(id).orElseThrow(NonExistentUserException::new);
     }
 
     public UserDto findUserDtoByEmail(String email) {
