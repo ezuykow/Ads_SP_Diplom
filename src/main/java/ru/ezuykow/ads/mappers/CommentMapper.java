@@ -20,7 +20,7 @@ public class CommentMapper {
     public ResponseWrapperComment mapCommentListToWrapper(List<Comment> comments) {
         List<FullCommentDto> collect = comments.stream().map(this::mapCommentToFullCommentDto)
                 .collect(Collectors.toList());
-        return new ResponseWrapperComment(collect.size(), collect.toArray(new FullCommentDto[0]));
+        return new ResponseWrapperComment(collect.size(), collect);
     }
 
     public FullCommentDto mapCommentToFullCommentDto(Comment comment) {

@@ -72,6 +72,7 @@ Content-Type: image/png
 ###
 GET http://localhost:8080/ads
 Content-Type: application/json
+Authorization: Basic user777 pass777
 
 ###
 POST http://localhost:8080/ads
@@ -95,9 +96,9 @@ Content-Type: application/json
 --AddAdBoundary
 
 ###
-GET http://localhost:8080/ads/1
+GET http://localhost:8080/ads/2
 Content-Type: application/json
-Authorization: Basic username password
+Authorization: Basic user777 pass777
 
 ###
 DELETE http://localhost:8080/ads/3
@@ -135,7 +136,7 @@ Content-Type: image/png
 ###COMMENTS
 POST http://localhost:8080/ads/2/comments
 Content-Type: application/json
-Authorization: Basic username password
+Authorization: Basic user777 pass777
 
 {
   "text": "first comment"
@@ -143,7 +144,7 @@ Authorization: Basic username password
 
 ###
 GET http://localhost:8080/ads/2/comments
-Authorization: Basic username password
+Authorization: Basic user777 pass777
 
 ###
 DELETE http://localhost:8080/ads/2/comments/3

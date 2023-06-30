@@ -20,11 +20,7 @@ public class AdMapper {
 
     public ResponseWrapperAds mapAdsListToResponseWrapperAds(List<Ad> ads) {
         List<AdDto> dtoList = ads.stream().map(this::mapEntityToDto).collect(Collectors.toList());
-
-        return new ResponseWrapperAds(
-                dtoList.size(),
-                dtoList.toArray(new AdDto[0])
-        );
+        return new ResponseWrapperAds(dtoList.size(), dtoList);
     }
 
     public Ad mapCreateAdDtoToAd(CreateAdDto dto) {

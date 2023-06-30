@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author ezuykow
  */
@@ -13,5 +15,5 @@ import lombok.NoArgsConstructor;
 public class ResponseWrapperComment {
 
     private Integer count;
-    private FullCommentDto[] results;
+    private List<FullCommentDto> results;
 }
