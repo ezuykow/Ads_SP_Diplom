@@ -29,7 +29,7 @@ public class AdMapper {
     public Ad mapCreateAdDtoToAd(CreateAdDto dto) {
         return new Ad(
                 0,
-                0,
+                new User(),
                 "",
                 dto.getPrice(),
                 dto.getTitle(),
@@ -39,7 +39,7 @@ public class AdMapper {
 
     public AdDto mapEntityToDto(Ad ad) {
         return new AdDto(
-                ad.getAuthor(),
+                ad.getAuthor().getUserId(),
                 ad.getImage(),
                 ad.getPk(),
                 ad.getPrice(),

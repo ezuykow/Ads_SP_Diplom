@@ -21,8 +21,9 @@ public class Ad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pk;
 
-    @Column(name = "author_id")
-    private Integer author;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @Column(name = "image")
     private String image;

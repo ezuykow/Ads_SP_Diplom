@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author ezuykow
@@ -41,4 +42,7 @@ public class User {
 
     @Column(name = "encoded_password")
     private String encodedPassword;
+
+    @OneToMany(mappedBy = "author" ,cascade = CascadeType.ALL)
+    private List<Ad> ads;
 }

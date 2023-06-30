@@ -47,8 +47,7 @@ public class AdController {
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperAds> getMyAds(Authentication authentication) {
         User author = userService.findUserByEmail(authentication.getName());
-        return ResponseEntity.ok(adMapper.mapAdsListToResponseWrapperAds(
-                adService.findAllByAuthorId(author.getUserId())));
+        return ResponseEntity.ok(adMapper.mapAdsListToResponseWrapperAds(author.getAds()));
     }
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -68,7 +67,8 @@ public class AdController {
     {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         if (targetAdOpt.isPresent()) {
-            User author = userService.findById(targetAdOpt.get().getAuthor());
+//            User author = userService.findById(targetAdOpt.get().getAuthor());
+            User author = targetAdOpt.get().getAuthor();
             if (authentication.getName().equals(author.getEmail())) {
                 return ResponseEntity.ok(adService.editAd(targetAdOpt.get(), createAdDto));
             }
@@ -87,7 +87,8 @@ public class AdController {
     {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         if (targetAdOpt.isPresent()) {
-            User author = userService.findById(targetAdOpt.get().getAuthor());
+//            User author = userService.findById(targetAdOpt.get().getAuthor());
+            User author = targetAdOpt.get().getAuthor();
             if (authentication.getName().equals(author.getEmail())) {
                 return ResponseEntity.ok().body(adService.editAdImage(targetAdOpt.get(), imageFile));
             }

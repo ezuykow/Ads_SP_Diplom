@@ -40,10 +40,6 @@ public class AdService {
         return repository.findAll();
     }
 
-    public List<Ad> findAllByAuthorId(int authorId) {
-        return repository.findAllByAuthor(authorId);
-    }
-
     public Optional<Ad> findById(int id) {
         return repository.findById(id);
     }
@@ -51,19 +47,19 @@ public class AdService {
     @Transactional
     public AdDto createAd(String username, MultipartFile image, CreateAdDto createAdsDto) {
         Ad newAd = adMapper.mapCreateAdDtoToAd(createAdsDto);
-
+        newAd.setAuthor(userService.findUserByEmail(username));
         newAd = save(newAd);
-        int newAdId = newAd.getPk();
 
+        int newAdId = newAd.getPk();
         newAd.setImage(uploadImage(newAdId, image));
-        newAd.setAuthor(userService.findUserByEmail(username).getUserId());
         save(newAd);
 
         return adMapper.mapEntityToDto(newAd);
     }
 
     public FullAdDto createFullAd(Ad ad) {
-        User author = userService.findById(ad.getAuthor());
+//        User author = userService.findById(ad.getAuthor());
+        User author = ad.getAuthor();
         return adMapper.mapAdAndAuthorToFullAdDto(ad, author);
     }
 
