@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.ezuykow.ads.dto.AdDto;
-import ru.ezuykow.ads.dto.CreateAdDto;
-import ru.ezuykow.ads.dto.FullAdDto;
-import ru.ezuykow.ads.dto.ResponseWrapperAds;
+import ru.ezuykow.ads.dto.*;
 import ru.ezuykow.ads.entities.Ad;
 import ru.ezuykow.ads.entities.User;
 import ru.ezuykow.ads.mappers.AdMapper;
@@ -67,11 +64,11 @@ public class AdController {
     {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         if (targetAdOpt.isPresent()) {
-//            User author = userService.findById(targetAdOpt.get().getAuthor());
-            User author = targetAdOpt.get().getAuthor();
-            if (authentication.getName().equals(author.getEmail())) {
-                return ResponseEntity.ok(adService.editAd(targetAdOpt.get(), createAdDto));
-            }
+           User initiator = userService.findUserByEmail(authentication.getName());
+           if (initiator.getRole() == Role.ADMIN
+                   || initiator.getEmail().equals(targetAdOpt.get().getAuthor().getEmail())) {
+               return ResponseEntity.ok(adService.editAd(targetAdOpt.get(), createAdDto));
+           }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -87,9 +84,9 @@ public class AdController {
     {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         if (targetAdOpt.isPresent()) {
-//            User author = userService.findById(targetAdOpt.get().getAuthor());
-            User author = targetAdOpt.get().getAuthor();
-            if (authentication.getName().equals(author.getEmail())) {
+            User initiator = userService.findUserByEmail(authentication.getName());
+            if (initiator.getRole() == Role.ADMIN
+                    || initiator.getEmail().equals(targetAdOpt.get().getAuthor().getEmail())) {
                 return ResponseEntity.ok().body(adService.editAdImage(targetAdOpt.get(), imageFile));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -98,12 +95,20 @@ public class AdController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAdById(@PathVariable("id") int adId) {
-        Optional<Ad> targetAd = adService.findById(adId);
-        return targetAd.map(ad -> {
-                    adService.deleteById(adId);
-                    return ResponseEntity.ok().build();
-                })
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
+    public ResponseEntity<?> deleteAdById(
+            Authentication authentication,
+            @PathVariable("id") int adId)
+    {
+        Optional<Ad> targetAdOpt = adService.findById(adId);
+        if (targetAdOpt.isPresent()) {
+            User initiator = userService.findUserByEmail(authentication.getName());
+            if (initiator.getRole() == Role.ADMIN
+                    || initiator.getEmail().equals(targetAdOpt.get().getAuthor().getEmail())) {
+                adService.deleteById(adId);
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

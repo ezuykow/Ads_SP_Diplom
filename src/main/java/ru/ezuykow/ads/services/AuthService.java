@@ -59,7 +59,7 @@ public class AuthService {
                 org.springframework.security.core.userdetails.User.builder()
                         .password(targetUser.getEncodedPassword())
                         .username(targetUser.getEmail())
-                        .roles(targetUser.getRole())
+                        .roles(targetUser.getRole().name())
                         .build());
         return true;
     }

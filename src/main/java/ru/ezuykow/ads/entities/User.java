@@ -3,6 +3,7 @@ package ru.ezuykow.ads.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.ezuykow.ads.dto.Role;
 
 import javax.persistence.*;
 import java.util.List;
@@ -35,7 +36,8 @@ public class User {
     private String phone;
 
     @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "image")
     private String image;

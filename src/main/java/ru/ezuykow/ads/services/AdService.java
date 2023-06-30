@@ -58,7 +58,6 @@ public class AdService {
     }
 
     public FullAdDto createFullAd(Ad ad) {
-//        User author = userService.findById(ad.getAuthor());
         User author = ad.getAuthor();
         return adMapper.mapAdAndAuthorToFullAdDto(ad, author);
     }

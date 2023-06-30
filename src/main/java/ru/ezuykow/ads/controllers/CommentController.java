@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.ezuykow.ads.dto.CreateCommentDto;
 import ru.ezuykow.ads.dto.FullCommentDto;
 import ru.ezuykow.ads.dto.ResponseWrapperComment;
+import ru.ezuykow.ads.dto.Role;
 import ru.ezuykow.ads.entities.Comment;
 import ru.ezuykow.ads.entities.User;
 import ru.ezuykow.ads.mappers.CommentMapper;
 import ru.ezuykow.ads.services.AdService;
 import ru.ezuykow.ads.services.CommentService;
+import ru.ezuykow.ads.services.UserService;
 
 import java.util.Optional;
 
@@ -28,6 +30,7 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
     private final AdService adService;
+    private final UserService userService;
 
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getAllCommentsByAd(@PathVariable("id") int adId) {
@@ -59,8 +62,9 @@ public class CommentController {
     {
         Optional<Comment> targetCommentOpt = commentService.findById(commentId);
         if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-            User targetCommentAuthor = targetCommentOpt.get().getAuthor();
-            if (targetCommentAuthor.getEmail().equals(authentication.getName())) {
+            User initiator = userService.findUserByEmail(authentication.getName());
+            if (initiator.getRole() == Role.ADMIN
+                    || initiator.getEmail().equals(targetCommentOpt.get().getAuthor().getEmail())) {
                 return ResponseEntity.ok(commentService.editComment(commentId, fullCommentDto));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -76,8 +80,9 @@ public class CommentController {
     {
         Optional<Comment> targetCommentOpt = commentService.findById(commentId);
         if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-            User targetCommentAuthor = targetCommentOpt.get().getAuthor();
-            if (targetCommentAuthor.getEmail().equals(authentication.getName())) {
+            User initiator = userService.findUserByEmail(authentication.getName());
+            if (initiator.getRole() == Role.ADMIN
+                    || initiator.getEmail().equals(targetCommentOpt.get().getAuthor().getEmail())) {
                 commentService.deleteById(commentId);
                 return ResponseEntity.ok().build();
             }

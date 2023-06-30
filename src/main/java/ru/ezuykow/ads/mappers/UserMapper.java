@@ -35,7 +35,7 @@ public class UserMapper {
                 regReq.getFirstName(),
                 regReq.getLastName(),
                 regReq.getPhone(),
-                role.name(),
+                role,
                 null,
                 encodedPassword,
                 new ArrayList<>(),
