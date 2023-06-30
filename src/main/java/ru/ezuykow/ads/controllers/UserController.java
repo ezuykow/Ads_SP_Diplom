@@ -26,38 +26,26 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getMe(Authentication authentication) {
-        if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok().body(userService.findUserDtoByEmail(authentication.getName()));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok().body(userService.findUserDtoByEmail(authentication.getName()));
     }
 
     @PostMapping("/set_password")
     public ResponseEntity<?> setPassword(Authentication authentication,
                                          @RequestBody NewPassword newPasswordDto) {
-        if (authentication.isAuthenticated()) {
-            userService.setPassword(authentication.getName(), newPasswordDto);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        userService.setPassword(authentication.getName(), newPasswordDto);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/me")
     public ResponseEntity<?> editUser(Authentication authentication,
                                       @RequestBody UserDto userDto) {
-        if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok().body(userService.editUser(authentication.getName(), userDto));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok().body(userService.editUser(authentication.getName(), userDto));
     }
 
     @PatchMapping(value = "me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> editImage(Authentication authentication,
                                        @RequestPart("image") MultipartFile image) {
-        if (authentication.isAuthenticated()) {
-            userService.uploadImage(authentication.getName(), image);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        userService.uploadImage(authentication.getName(), image);
+        return ResponseEntity.ok().build();
     }
 }

@@ -38,26 +38,17 @@ public class AdController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FullAdDto> getFullAdById(
-            Authentication authentication,
-            @PathVariable("id") int adId)
-    {
-        if (authentication.isAuthenticated()) {
-            Optional<Ad> targetAdOpt = adService.findById(adId);
-            return targetAdOpt.map(ad -> ResponseEntity.ok(adService.createFullAd(ad)))
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<FullAdDto> getFullAdById(@PathVariable("id") int adId) {
+        Optional<Ad> targetAdOpt = adService.findById(adId);
+        return targetAdOpt.map(ad -> ResponseEntity.ok(adService.createFullAd(ad)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperAds> getMyAds(Authentication authentication) {
-        if (authentication.isAuthenticated()) {
-            User author = userService.findUserByEmail(authentication.getName());
-            return ResponseEntity.ok(adMapper.mapAdsListToResponseWrapperAds(
-                    adService.findAllByAuthorId(author.getUserId())));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        User author = userService.findUserByEmail(authentication.getName());
+        return ResponseEntity.ok(adMapper.mapAdsListToResponseWrapperAds(
+                adService.findAllByAuthorId(author.getUserId())));
     }
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -66,10 +57,7 @@ public class AdController {
             @RequestPart("image") MultipartFile image,
             @RequestPart("properties") CreateAdDto createAdsDto)
     {
-        if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok(adService.createAd(authentication.getName(), image, createAdsDto));
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.ok(adService.createAd(authentication.getName(), image, createAdsDto));
     }
 
     @PatchMapping("/{id}")
@@ -78,18 +66,15 @@ public class AdController {
             @PathVariable("id") int adId,
             @RequestBody CreateAdDto createAdDto)
     {
-        if (authentication.isAuthenticated()) {
-            Optional<Ad> targetAdOpt = adService.findById(adId);
-            if (targetAdOpt.isPresent()) {
-                User author = userService.findById(targetAdOpt.get().getAuthor());
-                if (authentication.getName().equals(author.getEmail())) {
-                    return ResponseEntity.ok(adService.editAd(targetAdOpt.get(), createAdDto));
-                }
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Optional<Ad> targetAdOpt = adService.findById(adId);
+        if (targetAdOpt.isPresent()) {
+            User author = userService.findById(targetAdOpt.get().getAuthor());
+            if (authentication.getName().equals(author.getEmail())) {
+                return ResponseEntity.ok(adService.editAd(targetAdOpt.get(), createAdDto));
             }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping(value = "/{id}/image",
@@ -98,33 +83,26 @@ public class AdController {
     public ResponseEntity<?> editAdImage(
             Authentication authentication,
             @PathVariable("id") int adId,
-            @RequestPart("image") MultipartFile imageFile) {
-        if (authentication.isAuthenticated()) {
-            Optional<Ad> targetAdOpt = adService.findById(adId);
-            if (targetAdOpt.isPresent()) {
-                User author = userService.findById(targetAdOpt.get().getAuthor());
-                if (authentication.getName().equals(author.getEmail())) {
-                    return ResponseEntity.ok().body(adService.editAdImage(targetAdOpt.get(), imageFile));
-                }
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            @RequestPart("image") MultipartFile imageFile)
+    {
+        Optional<Ad> targetAdOpt = adService.findById(adId);
+        if (targetAdOpt.isPresent()) {
+            User author = userService.findById(targetAdOpt.get().getAuthor());
+            if (authentication.getName().equals(author.getEmail())) {
+                return ResponseEntity.ok().body(adService.editAdImage(targetAdOpt.get(), imageFile));
             }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAdById(
-            Authentication authentication,
-            @PathVariable("id") int adId) {
-        if (authentication.isAuthenticated()) {
-            Optional<Ad> targetAd = adService.findById(adId);
-            return targetAd.map(ad -> {
-                        adService.deleteById(adId);
-                        return ResponseEntity.ok().build();
-                    })
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<?> deleteAdById(@PathVariable("id") int adId) {
+        Optional<Ad> targetAd = adService.findById(adId);
+        return targetAd.map(ad -> {
+                    adService.deleteById(adId);
+                    return ResponseEntity.ok().build();
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 }

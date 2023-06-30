@@ -32,17 +32,11 @@ public class CommentController {
     private final UserService userService;
 
     @GetMapping("/{id}/comments")
-    public ResponseEntity<ResponseWrapperComment> getAllCommentsByAd(
-            Authentication authentication,
-            @PathVariable("id") int adId)
-    {
-        if (authentication.isAuthenticated()) {
-            if (isAdExist(adId)) {
-                return ResponseEntity.ok(commentMapper.mapCommentListToWrapper(commentService.findAllByAdId(adId)));
-            }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<ResponseWrapperComment> getAllCommentsByAd(@PathVariable("id") int adId) {
+        if (isAdExist(adId)) {
+            return ResponseEntity.ok(commentMapper.mapCommentListToWrapper(commentService.findAllByAdId(adId)));
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("/{id}/comments")
@@ -51,14 +45,11 @@ public class CommentController {
             @PathVariable("id") int adId,
             @RequestBody CreateCommentDto createCommentDto)
     {
-        if (authentication.isAuthenticated()) {
-            if (isAdExist(adId)) {
-                return ResponseEntity.ok(commentMapper.mapCommentToFullCommentDto(
-                        commentService.createComment(authentication.getName(), createCommentDto, adId)));
-            }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        if (isAdExist(adId)) {
+            return ResponseEntity.ok(commentMapper.mapCommentToFullCommentDto(
+                    commentService.createComment(authentication.getName(), createCommentDto, adId)));
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/{id}/comments/{commentId}")
@@ -68,17 +59,15 @@ public class CommentController {
             @PathVariable("commentId") int commentId,
             @RequestBody FullCommentDto fullCommentDto)
     {
-        if (authentication.isAuthenticated()) {
-            Optional<Comment> targetCommentOpt = commentService.findById(commentId);
-            if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-                User author = userService.findUserByEmail(authentication.getName());
-                if (targetCommentOpt.get().getAuthorId().equals(author.getUserId())) {
-                    return ResponseEntity.ok(commentService.editComment(commentId, fullCommentDto));
-                }
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Optional<Comment> targetCommentOpt = commentService.findById(commentId);
+        if (isAdExist(adId) && targetCommentOpt.isPresent()) {
+            User author = userService.findUserByEmail(authentication.getName());
+            if (targetCommentOpt.get().getAuthorId().equals(author.getUserId())) {
+                return ResponseEntity.ok(commentService.editComment(commentId, fullCommentDto));
             }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{id}/comments/{commentId}")
@@ -87,23 +76,19 @@ public class CommentController {
             @PathVariable("id") int adId,
             @PathVariable("commentId") int commentId)
     {
-        if (authentication.isAuthenticated()) {
-            Optional<Comment> targetCommentOpt = commentService.findById(commentId);
-            if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-                User author = userService.findUserByEmail(authentication.getName());
-                if (targetCommentOpt.get().getAuthorId().equals(author.getUserId())) {
-                    commentService.deleteById(commentId);
-                    return ResponseEntity.ok().build();
-                }
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        Optional<Comment> targetCommentOpt = commentService.findById(commentId);
+        if (isAdExist(adId) && targetCommentOpt.isPresent()) {
+            User author = userService.findUserByEmail(authentication.getName());
+            if (targetCommentOpt.get().getAuthorId().equals(author.getUserId())) {
+                commentService.deleteById(commentId);
+                return ResponseEntity.ok().build();
             }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private boolean isAdExist(int adId) {
         return adService.findById(adId).isPresent();
     }
-
 }
