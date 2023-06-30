@@ -38,6 +38,7 @@ public class UserMapper {
                 role.name(),
                 null,
                 encodedPassword,
+                new ArrayList<>(),
                 new ArrayList<>()
         );
     }

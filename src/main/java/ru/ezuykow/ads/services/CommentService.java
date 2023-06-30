@@ -41,7 +41,7 @@ public class CommentService {
         return save(new Comment(
                 0,
                 targetAd,
-                author.getUserId(),
+                author,
                 System.currentTimeMillis(),
                 createCommentDto.getText()));
     }

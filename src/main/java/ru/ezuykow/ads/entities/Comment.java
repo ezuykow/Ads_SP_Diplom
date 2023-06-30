@@ -25,8 +25,9 @@ public class Comment {
     @JoinColumn(name = "ad_id")
     private Ad ad;
 
-    @Column(name = "author_id")
-    private Integer authorId;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @Column(name = "creating_time")
     private Long creatingTime;

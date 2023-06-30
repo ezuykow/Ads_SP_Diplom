@@ -43,6 +43,9 @@ public class User {
     @Column(name = "encoded_password")
     private String encodedPassword;
 
-    @OneToMany(mappedBy = "author" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Ad> ads;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 }

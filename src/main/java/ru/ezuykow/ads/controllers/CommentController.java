@@ -13,7 +13,6 @@ import ru.ezuykow.ads.entities.User;
 import ru.ezuykow.ads.mappers.CommentMapper;
 import ru.ezuykow.ads.services.AdService;
 import ru.ezuykow.ads.services.CommentService;
-import ru.ezuykow.ads.services.UserService;
 
 import java.util.Optional;
 
@@ -29,7 +28,6 @@ public class CommentController {
     private final CommentService commentService;
     private final CommentMapper commentMapper;
     private final AdService adService;
-    private final UserService userService;
 
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getAllCommentsByAd(@PathVariable("id") int adId) {
@@ -61,8 +59,8 @@ public class CommentController {
     {
         Optional<Comment> targetCommentOpt = commentService.findById(commentId);
         if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-            User author = userService.findUserByEmail(authentication.getName());
-            if (targetCommentOpt.get().getAuthorId().equals(author.getUserId())) {
+            User targetCommentAuthor = targetCommentOpt.get().getAuthor();
+            if (targetCommentAuthor.getEmail().equals(authentication.getName())) {
                 return ResponseEntity.ok(commentService.editComment(commentId, fullCommentDto));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -78,8 +76,8 @@ public class CommentController {
     {
         Optional<Comment> targetCommentOpt = commentService.findById(commentId);
         if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-            User author = userService.findUserByEmail(authentication.getName());
-            if (targetCommentOpt.get().getAuthorId().equals(author.getUserId())) {
+            User targetCommentAuthor = targetCommentOpt.get().getAuthor();
+            if (targetCommentAuthor.getEmail().equals(authentication.getName())) {
                 commentService.deleteById(commentId);
                 return ResponseEntity.ok().build();
             }
