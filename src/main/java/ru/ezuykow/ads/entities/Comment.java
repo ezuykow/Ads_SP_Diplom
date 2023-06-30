@@ -21,8 +21,9 @@ public class Comment {
     @Column(name = "comment_id")
     private Integer id;
 
-    @Column(name = "ad_id")
-    private Integer adId;
+    @ManyToOne
+    @JoinColumn(name = "ad_id")
+    private Ad ad;
 
     @Column(name = "author_id")
     private Integer authorId;

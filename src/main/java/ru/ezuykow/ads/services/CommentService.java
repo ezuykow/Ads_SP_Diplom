@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.ezuykow.ads.dto.CreateCommentDto;
 import ru.ezuykow.ads.dto.FullCommentDto;
+import ru.ezuykow.ads.entities.Ad;
 import ru.ezuykow.ads.entities.Comment;
 import ru.ezuykow.ads.entities.User;
+import ru.ezuykow.ads.exceptions.NonExistentAdException;
 import ru.ezuykow.ads.exceptions.NonExistentCommentException;
 import ru.ezuykow.ads.mappers.CommentMapper;
 import ru.ezuykow.ads.repositories.CommentRepository;
@@ -22,10 +24,11 @@ public class CommentService {
 
     private final CommentRepository repository;
     private final UserService userService;
+    private final AdService adService;
     private final CommentMapper commentMapper;
 
     public List<Comment> findAllByAdId(int adId) {
-        return repository.findAllByAdId(adId);
+        return repository.findAllByAdPk(adId);
     }
 
     public Optional<Comment> findById(int commentId) {
@@ -34,9 +37,10 @@ public class CommentService {
 
     public Comment createComment(String username, CreateCommentDto createCommentDto, int adId) {
         User author = userService.findUserByEmail(username);
+        Ad targetAd = adService.findById(adId).orElseThrow(NonExistentAdException::new);
         return save(new Comment(
                 0,
-                adId,
+                targetAd,
                 author.getUserId(),
                 System.currentTimeMillis(),
                 createCommentDto.getText()));
@@ -56,9 +60,5 @@ public class CommentService {
 
     public void deleteById(int id) {
         repository.deleteById(id);
-    }
-
-    public void deleteAllByAdId(int adId) {
-        repository.deleteAllByAdId(adId);
     }
 }

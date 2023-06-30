@@ -8,6 +8,7 @@ import ru.ezuykow.ads.dto.ResponseWrapperAds;
 import ru.ezuykow.ads.entities.Ad;
 import ru.ezuykow.ads.entities.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,8 @@ public class AdMapper {
                 "",
                 dto.getPrice(),
                 dto.getTitle(),
-                dto.getDescription()
+                dto.getDescription(),
+                new ArrayList<>()
         );
     }
 

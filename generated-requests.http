@@ -124,7 +124,7 @@ Content-Type: image/png
 --NewAdImageBoundary
 
 ###COMMENTS
-POST http://localhost:8080/ads/1/comments
+POST http://localhost:8080/ads/2/comments
 Content-Type: application/json
 Authorization: Basic username password
 
@@ -133,7 +133,7 @@ Authorization: Basic username password
 }
 
 ###
-GET http://localhost:8080/ads/1/comments
+GET http://localhost:8080/ads/2/comments
 Authorization: Basic username password
 
 ###

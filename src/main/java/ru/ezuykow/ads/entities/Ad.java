@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author ezuykow
@@ -36,4 +37,7 @@ public class Ad {
 
     @Column(name = "description")
     private String description;
+
+    @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 }
