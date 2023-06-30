@@ -85,6 +85,7 @@ public class AdService {
     }
 
     public void deleteById(int id) {
+        deleteImageByAdId(id);
         repository.deleteById(id);
     }
 
@@ -102,5 +103,13 @@ public class AdService {
         }
 
         return filePath.toString();
+    }
+
+    private void deleteImageByAdId(int adId) {
+        try {
+            Files.deleteIfExists(Path.of(adsImagesDirPath, adId + ".png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

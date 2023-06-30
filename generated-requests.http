@@ -91,7 +91,7 @@ Content-Type: application/json
 Authorization: Basic username password
 
 ###
-DELETE http://localhost:8080/ads/2
+DELETE http://localhost:8080/ads/3
 Content-Type: application/json
 Authorization: Basic username password
 
