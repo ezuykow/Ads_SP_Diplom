@@ -50,7 +50,8 @@ public class AdService {
         newAd = save(newAd);
 
         int newAdId = newAd.getPk();
-        newAd.setImage(uploadImage(newAdId, image));
+        uploadImage(newAdId, image);
+        newAd.setImage(String.valueOf(newAdId));
         save(newAd);
 
         return adMapper.mapEntityToDto(newAd);

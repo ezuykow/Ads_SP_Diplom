@@ -62,11 +62,9 @@ public class UserService {
 
     public User editUser(String targetEmail, UserDto dto) {
         User targetUser = findUserByEmail(targetEmail);
-        targetUser.setEmail(dto.getEmail());
         targetUser.setFirstName(dto.getFirstName());
         targetUser.setLastName(dto.getLastName());
         targetUser.setPhone(dto.getPhone());
-        targetUser.setImage(dto.getImage());
         save(targetUser);
         return targetUser;
     }
@@ -85,7 +83,7 @@ public class UserService {
             throw new RuntimeException(e);
         }
 
-        targetUser.setImage(filePath.toString());
+        targetUser.setImage(targetEmail);
         save(targetUser);
     }
 
