@@ -17,19 +17,13 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final UserService userService;
 
+    //-----------------API START-----------------
+
     public boolean login(String userName, String password) {
         if (!manager.userExists(userName)) {
-            User targetUser = userService.findUserByEmail(userName);
-            if (targetUser == null || !targetUser.getEncodedPassword().equals(String.valueOf(password.hashCode()))) {
+            if (!loadUserFromDB(userName)) {
                 return false;
             }
-            manager.createUser(
-                    org.springframework.security.core.userdetails.User.builder()
-                            .passwordEncoder(this.encoder::encode)
-                            .password(password)
-                            .username(userName)
-                            .roles(targetUser.getRole())
-                            .build());
         }
 
         UserDetails userDetails = manager.loadUserByUsername(userName);
@@ -48,8 +42,25 @@ public class AuthService {
                         .roles(role.name())
                         .build());
 
-        userService.saveUserFromRegReq(registerReq, role, registerReq.getPassword());
+        userService.saveUserFromRegReq(registerReq, role, encoder.encode(registerReq.getPassword()));
 
+        return true;
+    }
+
+    //-----------------API END-----------------
+
+    private boolean loadUserFromDB(String userName) {
+        User targetUser = userService.findUserByEmail(userName);
+        if (targetUser == null) {
+            return false;
+        }
+
+        manager.createUser(
+                org.springframework.security.core.userdetails.User.builder()
+                        .password(targetUser.getEncodedPassword())
+                        .username(targetUser.getEmail())
+                        .roles(targetUser.getRole())
+                        .build());
         return true;
     }
 }

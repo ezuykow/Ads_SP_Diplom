@@ -56,8 +56,8 @@ public class UserService {
         repository.save(user);
     }
 
-    public void saveUserFromRegReq(RegisterReq registerReq, Role role, String password) {
-        repository.save(userMapper.mapRegReqToUser(registerReq, role, String.valueOf(password.hashCode())));
+    public void saveUserFromRegReq(RegisterReq registerReq, Role role, String encodedPassword) {
+        repository.save(userMapper.mapRegReqToUser(registerReq, role, encodedPassword));
     }
 
     public User editUser(String targetEmail, UserDto dto) {

@@ -3,10 +3,10 @@ POST http://localhost:8080/register
 Content-Type: application/json
 
 {
-  "username": "username",
-  "password": "password",
-  "firstName": "firstName",
-  "lastName": "lastName",
+  "username": "user777",
+  "password": "pass777",
+  "firstName": "777",
+  "lastName": "777",
   "phone": "phone",
   "role": "USER"
 }
@@ -21,9 +21,18 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "user777",
+  "password": "pass777"
+}
+
+###
 GET http://localhost:8080/users/me
 Content-Type: application/json
-Authorization: Basic username password
+Authorization: Basic user777 pass777
 
 ###
 PATCH http://localhost:8080/users/me
