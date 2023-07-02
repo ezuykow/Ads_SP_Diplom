@@ -40,6 +40,18 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/{id}/comments/{commentId}")
+    public ResponseEntity<FullCommentDto> getAllCommentsByAd(
+            @PathVariable("id") int adId,
+            @PathVariable("commentId") int commentId)
+    {
+        Optional<Comment> targetCommentOpt = commentService.findById(commentId);
+        if (isAdExist(adId) && targetCommentOpt.isPresent()) {
+            return ResponseEntity.ok(commentMapper.mapCommentToFullCommentDto(targetCommentOpt.get()));
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping("/{id}/comments")
     public ResponseEntity<FullCommentDto> addCommentToAd(
             Authentication authentication,
