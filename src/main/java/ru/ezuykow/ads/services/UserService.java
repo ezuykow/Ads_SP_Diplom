@@ -83,7 +83,7 @@ public class UserService {
             throw new RuntimeException(e);
         }
 
-        targetUser.setImage(targetEmail);
+        targetUser.setImage("/" + avatarsPath + "/" + targetEmail);
         save(targetUser);
     }
 
