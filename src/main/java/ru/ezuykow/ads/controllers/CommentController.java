@@ -49,7 +49,7 @@ public class CommentController {
         if (isAdExist(adId) && targetCommentOpt.isPresent()) {
             return ResponseEntity.ok(commentMapper.mapCommentToFullCommentDto(targetCommentOpt.get()));
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("/{id}/comments")
@@ -62,7 +62,7 @@ public class CommentController {
             return ResponseEntity.ok(commentMapper.mapCommentToFullCommentDto(
                     commentService.createComment(authentication.getName(), createCommentDto, adId)));
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PatchMapping("/{id}/comments/{commentId}")
@@ -81,7 +81,7 @@ public class CommentController {
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping("/{id}/comments/{commentId}")
@@ -100,7 +100,7 @@ public class CommentController {
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     private boolean isAdExist(int adId) {

@@ -38,7 +38,7 @@ public class AdController {
     public ResponseEntity<FullAdDto> getFullAdById(@PathVariable("id") int adId) {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         return targetAdOpt.map(ad -> ResponseEntity.ok(adService.createFullAd(ad)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping("/me")
@@ -71,7 +71,7 @@ public class AdController {
            }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PatchMapping(value = "/{id}/image",
@@ -91,7 +91,7 @@ public class AdController {
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @DeleteMapping("/{id}")
@@ -109,6 +109,6 @@ public class AdController {
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
