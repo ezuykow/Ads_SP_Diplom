@@ -3,7 +3,6 @@ package ru.ezuykow.ads.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ezuykow.ads.dto.NewPassword;
@@ -29,7 +28,6 @@ public class UserService {
     @Value("${avatars.dir.path}")
     private String avatarsPath;
 
-    private final UserDetailsManager manager;
     private final UserRepository repository;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
@@ -40,8 +38,6 @@ public class UserService {
         User targetUser = findUserByEmail(email);
         targetUser.setEncodedPassword(encoder.encode(newPasswordDto.getNewPassword()));
         save(targetUser);
-
-        manager.changePassword(newPasswordDto.getCurrentPassword(), newPasswordDto.getNewPassword());
     }
 
     public UserDto findUserDtoByEmail(String email) {
