@@ -50,4 +50,16 @@ public class User {
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
+    public User(String email, String firstName, String lastName, String phone, Role role, String image, String encodedPassword, List<Ad> ads, List<Comment> comments) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.role = role;
+        this.image = image;
+        this.encodedPassword = encodedPassword;
+        this.ads = ads;
+        this.comments = comments;
+    }
 }

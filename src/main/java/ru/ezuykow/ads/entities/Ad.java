@@ -40,4 +40,13 @@ public class Ad {
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
+    public Ad(User author, String image, Integer price, String title, String description, List<Comment> comments) {
+        this.author = author;
+        this.image = image;
+        this.price = price;
+        this.title = title;
+        this.description = description;
+        this.comments = comments;
+    }
 }

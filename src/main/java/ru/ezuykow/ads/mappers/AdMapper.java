@@ -25,7 +25,6 @@ public class AdMapper {
 
     public Ad mapCreateAdDtoToAd(CreateAdDto dto) {
         return new Ad(
-                0,
                 new User(),
                 "",
                 dto.getPrice(),

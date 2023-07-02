@@ -32,8 +32,10 @@ public class UserController {
     @PostMapping("/set_password")
     public ResponseEntity<?> setPassword(Authentication authentication,
                                          @RequestBody NewPassword newPasswordDto) {
-        userService.setPassword(authentication.getName(), newPasswordDto);
-        return ResponseEntity.ok().build();
+        if (userService.setPassword(authentication.getName(), newPasswordDto)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PatchMapping("/me")

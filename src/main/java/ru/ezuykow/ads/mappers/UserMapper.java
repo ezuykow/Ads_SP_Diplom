@@ -30,7 +30,6 @@ public class UserMapper {
 
     public User mapRegReqToUser(RegisterReq regReq, Role role, String encodedPassword) {
         return new User(
-                0,
                 regReq.getUsername(),
                 regReq.getFirstName(),
                 regReq.getLastName(),

@@ -34,4 +34,11 @@ public class Comment {
 
     @Column(name = "comment_text")
     private String text;
+
+    public Comment(Ad ad, User author, Long creatingTime, String text) {
+        this.ad = ad;
+        this.author = author;
+        this.creatingTime = creatingTime;
+        this.text = text;
+    }
 }

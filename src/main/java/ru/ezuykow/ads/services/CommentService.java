@@ -39,7 +39,6 @@ public class CommentService {
         User author = userService.findUserByEmail(username);
         Ad targetAd = adService.findById(adId).orElseThrow(NonExistentAdException::new);
         return save(new Comment(
-                0,
                 targetAd,
                 author,
                 System.currentTimeMillis(),

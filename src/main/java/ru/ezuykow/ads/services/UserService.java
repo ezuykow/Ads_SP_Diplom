@@ -34,10 +34,14 @@ public class UserService {
 
     //-----------------API START-----------------
 
-    public void setPassword(String email, NewPassword newPasswordDto) {
+    public boolean setPassword(String email, NewPassword newPasswordDto) {
         User targetUser = findUserByEmail(email);
-        targetUser.setEncodedPassword(encoder.encode(newPasswordDto.getNewPassword()));
-        save(targetUser);
+        if (encoder.matches(newPasswordDto.getCurrentPassword(), targetUser.getEncodedPassword())) {
+            targetUser.setEncodedPassword(encoder.encode(newPasswordDto.getNewPassword()));
+            save(targetUser);
+            return true;
+        }
+        return false;
     }
 
     public UserDto findUserDtoByEmail(String email) {
