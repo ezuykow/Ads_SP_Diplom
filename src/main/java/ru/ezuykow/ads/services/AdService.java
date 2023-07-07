@@ -1,7 +1,6 @@
 package ru.ezuykow.ads.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ezuykow.ads.dto.AdDto;
@@ -13,9 +12,6 @@ import ru.ezuykow.ads.mappers.AdMapper;
 import ru.ezuykow.ads.repositories.AdRepository;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,12 +22,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdService {
 
-    @Value("${ads.images.dir.path}")
-    private String adsImagesDirPath;
-
     private final AdRepository repository;
     private final AdMapper adMapper;
     private final UserService userService;
+    private final ImageService imageService;
 
     //-----------------API START-----------------
 
@@ -49,9 +43,7 @@ public class AdService {
         newAd.setAuthor(userService.findUserByEmail(username));
         newAd = save(newAd);
 
-        int newAdId = newAd.getPk();
-        uploadImage(newAdId, image);
-        newAd.setImage("/" + adsImagesDirPath + "/" + newAdId);
+        newAd.setImage(imageService.uploadAdImage(newAd.getPk(), image));
         save(newAd);
 
         return adMapper.mapEntityToDto(newAd);
@@ -72,12 +64,8 @@ public class AdService {
 
     @Transactional
     public byte[] editAdImage(Ad ad, MultipartFile imageFile) {
-        String filePath = uploadImage(ad.getPk(), imageFile);
-        try {
-            return Files.readAllBytes(Path.of(filePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        imageService.uploadAdImage(ad.getPk(), imageFile);
+        return imageService.getAdImage(ad.getPk().toString());
     }
 
     public Ad save(Ad ad) {
@@ -85,31 +73,9 @@ public class AdService {
     }
 
     public void deleteById(int id) {
-        deleteImageByAdId(id);
+        imageService.deleteAdImage(id);
         repository.deleteById(id);
     }
 
     //-----------------API END-----------------
-
-    private String uploadImage(int newAdId, MultipartFile image) {
-        Path filePath = Path.of(adsImagesDirPath, newAdId + ".png");
-
-        try {
-            Files.createDirectories(filePath.getParent());
-            Files.deleteIfExists(filePath);
-            image.transferTo(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return filePath.toString();
-    }
-
-    private void deleteImageByAdId(int adId) {
-        try {
-            Files.deleteIfExists(Path.of(adsImagesDirPath, adId + ".png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

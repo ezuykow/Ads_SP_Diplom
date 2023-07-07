@@ -1,7 +1,6 @@
 package ru.ezuykow.ads.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,9 +13,6 @@ import ru.ezuykow.ads.mappers.UserMapper;
 import ru.ezuykow.ads.repositories.UserRepository;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * @author ezuykow
@@ -25,12 +21,10 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Value("${avatars.dir.path}")
-    private String avatarsPath;
-
     private final UserRepository repository;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
+    private final ImageService imageService;
 
     //-----------------API START-----------------
 
@@ -72,18 +66,7 @@ public class UserService {
     @Transactional
     public void uploadImage(String targetEmail, MultipartFile image) {
         User targetUser = findUserByEmail(targetEmail);
-
-        Path filePath = Path.of(avatarsPath, targetEmail + ".png");
-
-        try {
-            Files.createDirectories(filePath.getParent());
-            Files.deleteIfExists(filePath);
-            image.transferTo(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        targetUser.setImage("/" + avatarsPath + "/" + targetEmail);
+        targetUser.setImage(imageService.uploadUserAvatar(targetEmail, image));
         save(targetUser);
     }
 
