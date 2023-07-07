@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.ezuykow.ads.dto.*;
 import ru.ezuykow.ads.entities.Ad;
 import ru.ezuykow.ads.entities.User;
+import ru.ezuykow.ads.exceptions.NonExistentAdException;
 import ru.ezuykow.ads.mappers.AdMapper;
 import ru.ezuykow.ads.services.AdService;
 import ru.ezuykow.ads.services.UserService;
@@ -84,9 +85,7 @@ public class AdController {
     {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         if (targetAdOpt.isPresent()) {
-            User initiator = userService.findUserByEmail(authentication.getName());
-            if (initiator.getRole() == Role.ADMIN
-                    || initiator.getEmail().equals(targetAdOpt.get().getAuthor().getEmail())) {
+            if (isUserAdminOrAuthor(authentication.getName(), targetAdOpt)) {
                 return ResponseEntity.ok().body(adService.editAdImage(targetAdOpt.get(), imageFile));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -101,14 +100,19 @@ public class AdController {
     {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         if (targetAdOpt.isPresent()) {
-            User initiator = userService.findUserByEmail(authentication.getName());
-            if (initiator.getRole() == Role.ADMIN
-                    || initiator.getEmail().equals(targetAdOpt.get().getAuthor().getEmail())) {
+            if (isUserAdminOrAuthor(authentication.getName(), targetAdOpt)){
                 adService.deleteById(adId);
                 return ResponseEntity.ok().build();
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    private boolean isUserAdminOrAuthor(String targetEmail, Optional<Ad> targetAdOpt) {
+        User initiator = userService.findUserByEmail(targetEmail);
+        return initiator.getRole() == Role.ADMIN
+                || initiator.getEmail()
+                    .equals(targetAdOpt.orElseThrow(NonExistentAdException::new).getAuthor().getEmail());
     }
 }
