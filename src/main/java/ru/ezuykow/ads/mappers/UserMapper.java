@@ -17,6 +17,12 @@ public class UserMapper {
 
     //-----------------API START-----------------
 
+    /**
+     * Map {@link User} to {@link UserDto}
+     * @param user target {@link User}
+     * @return created {@link UserDto}
+     * @author ezuykow
+     */
     public UserDto mapEntityToDto(User user) {
         return new UserDto(
                 user.getUserId(),
@@ -28,6 +34,14 @@ public class UserMapper {
         );
     }
 
+    /**
+     * Create new {@link User} from register request
+     * @param regReq register request
+     * @param role user's role
+     * @param encodedPassword user's encoded password
+     * @return created {@link User}
+     * @author ezuykow
+     */
     public User mapRegReqToUser(RegisterReq regReq, Role role, String encodedPassword) {
         return new User(
                 regReq.getUsername(),

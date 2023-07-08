@@ -17,12 +17,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentMapper {
 
+    //-----------------API START-----------------
+
+    /**
+     * Map {@link List} of {@link Comment} to {@link ResponseWrapperComment}
+     * @param comments target {@link List} of {@link Comment}
+     * @return created {@link ResponseWrapperComment}
+     * @author ezuykow
+     */
     public ResponseWrapperComment mapCommentListToWrapper(List<Comment> comments) {
         List<FullCommentDto> collect = comments.stream().map(this::mapCommentToFullCommentDto)
                 .collect(Collectors.toList());
         return new ResponseWrapperComment(collect.size(), collect);
     }
 
+    /**
+     * Map {@link Comment} to {@link FullCommentDto}
+     * @param comment target {@link Comment}
+     * @return created {@link FullCommentDto}
+     * @author ezuykow
+     */
     public FullCommentDto mapCommentToFullCommentDto(Comment comment) {
         User author = comment.getAuthor();
         return new FullCommentDto(
@@ -34,4 +48,7 @@ public class CommentMapper {
                 comment.getText()
         );
     }
+
+    //-----------------API END-----------------
+
 }

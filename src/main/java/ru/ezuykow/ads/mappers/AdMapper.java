@@ -18,11 +18,25 @@ import java.util.stream.Collectors;
 @Component
 public class AdMapper {
 
+    //-----------------API START-----------------
+
+    /**
+     * Map {@link List} of {@link Ad} to {@link ResponseWrapperAds}
+     * @param ads {@link List} of {@link Ad}
+     * @return created {@link ResponseWrapperAds}
+     * @author ezuykow
+     */
     public ResponseWrapperAds mapAdsListToResponseWrapperAds(List<Ad> ads) {
         List<AdDto> dtoList = ads.stream().map(this::mapEntityToDto).collect(Collectors.toList());
         return new ResponseWrapperAds(dtoList.size(), dtoList);
     }
 
+    /**
+     * Map {@link CreateAdDto} to {@link Ad}
+     * @param dto target {@link CreateAdDto}
+     * @return created {@link Ad}
+     * @author ezuykow
+     */
     public Ad mapCreateAdDtoToAd(CreateAdDto dto) {
         return new Ad(
                 new User(),
@@ -34,6 +48,12 @@ public class AdMapper {
         );
     }
 
+    /**
+     * Map {@link Ad} to {@link AdDto}
+     * @param ad target {@link Ad}
+     * @return created {@link AdDto}
+     * @author ezuykow
+     */
     public AdDto mapEntityToDto(Ad ad) {
         return new AdDto(
                 ad.getAuthor().getUserId(),
@@ -44,6 +64,13 @@ public class AdMapper {
         );
     }
 
+    /**
+     * Map {@link Ad} and {@link User} to {@link FullAdDto}
+     * @param ad target {@link Ad}
+     * @param author target {@link User}
+     * @return created {@link FullAdDto}
+     * @author ezuykow
+     */
     public FullAdDto mapAdAndAuthorToFullAdDto(Ad ad, User author) {
         return new FullAdDto(
                 ad.getPk(),
@@ -57,4 +84,7 @@ public class AdMapper {
                 ad.getTitle()
         );
     }
+
+    //-----------------API END-----------------
+
 }

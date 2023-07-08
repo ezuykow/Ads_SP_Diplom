@@ -32,14 +32,32 @@ public class CommentController {
     private final AdService adService;
     private final UserService userService;
 
+    //-----------------API START-----------------
+
+    /**
+     * Return all comments of target ad
+     * @param adId {@code id} of target ad (URL variable)
+     * @return {@link HttpStatus#OK} with all comments in {@link ResponseWrapperComment} instance if target ad existed, <br>
+     * {@link HttpStatus#NOT_FOUND} otherwise
+     * @author ezuykow
+     */
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getAllCommentsByAd(@PathVariable("id") int adId) {
         if (isAdExist(adId)) {
             return ResponseEntity.ok(commentMapper.mapCommentListToWrapper(commentService.findAllByAdId(adId)));
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    /**
+     * Return target comment of target ad
+     * @param adId {@code id} of target ad
+     * @param commentId {@code id} of target comment
+     * @return {@link HttpStatus#OK} with comment in {@link FullCommentDto} instance
+     * if target ad and target comment are existed, <br>
+     * {@link HttpStatus#NOT_FOUND} otherwise
+     * @author ezuykow
+     */
     @GetMapping("/{id}/comments/{commentId}")
     public ResponseEntity<FullCommentDto> getAllCommentsByAd(
             @PathVariable("id") int adId,
@@ -52,6 +70,16 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    /**
+     * Create comment for target ad
+     * @param authentication (inject) user auth data
+     * @param adId {@code id} of target ad
+     * @param createCommentDto new comment data
+     * @return {@link HttpStatus#OK} with created comment in {@link FullCommentDto} instance
+     * if target ad existed, <br>
+     * {@link HttpStatus#NOT_FOUND} otherwise
+     * @author ezuykow
+     */
     @PostMapping("/{id}/comments")
     public ResponseEntity<FullCommentDto> addCommentToAd(
             Authentication authentication,
@@ -65,6 +93,18 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    /**
+     * Edit target comment
+     * @param authentication user auth data
+     * @param adId id of target ad
+     * @param commentId id of target comment
+     * @param fullCommentDto object with new comment's data
+     * @return {@link HttpStatus#OK} with edited comment in {@link FullCommentDto}
+     * if target ad and comment are existed and initiator is admin or comment's author, <br>
+     * {@link HttpStatus#NOT_FOUND} if target ad or comment not existent, <br>
+     * {@link HttpStatus#FORBIDDEN} if initiator not admin and not comment's author
+     * @author ezuykow
+     */
     @PatchMapping("/{id}/comments/{commentId}")
     public ResponseEntity<FullCommentDto> editComment(
             Authentication authentication,
@@ -84,6 +124,16 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    /**
+     * Delete target comment
+     * @param authentication user auth data
+     * @param adId id of target ad
+     * @param commentId id of target comment
+     * @return {@link HttpStatus#OK} if target ad and comment are existed and initiator is admin or comment's author, <br>
+     * {@link HttpStatus#NOT_FOUND} if target ad or comment not existent, <br>
+     * {@link HttpStatus#FORBIDDEN} if initiator not admin and not comment's author
+     * @author ezuykow
+     */
     @DeleteMapping("/{id}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(
             Authentication authentication,
@@ -103,6 +153,15 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    //-----------------API END-----------------
+
+    /**
+     * Check that target ad is existed
+     * @param adId id of target ad
+     * @return true if ad existed, <br>
+     * false otherwise
+     * @author ezuykow
+     */
     private boolean isAdExist(int adId) {
         return adService.findById(adId).isPresent();
     }

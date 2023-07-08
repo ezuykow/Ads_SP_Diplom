@@ -18,6 +18,12 @@ public class UserDetailService implements UserDetailsService {
 
     //-----------------API START-----------------
 
+    /**
+     * Return {@link UserDetails} of target user
+     * @param username target user's username (email)
+     * @return {@link UserDetails} of target user
+     * @throws UsernameNotFoundException if user with this username is not existed
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User targetUser = userService.findUserByEmail(username);
@@ -29,6 +35,12 @@ public class UserDetailService implements UserDetailsService {
 
     //-----------------API END-----------------
 
+    /**
+     * Build {@link UserDetails} for target user
+     * @param targetUser target {@link User}
+     * @return {@link UserDetails} for target user
+     * @author ezuykow
+     */
     private UserDetails buildUserDetails(User targetUser) {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(targetUser.getEmail())

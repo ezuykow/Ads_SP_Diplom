@@ -15,7 +15,9 @@ import ru.ezuykow.ads.services.AuthService;
 
 import static ru.ezuykow.ads.dto.Role.USER;
 
-
+/**
+ * @author ezuykow
+ */
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -24,6 +26,15 @@ public class AuthController {
 
     private final AuthService authService;
 
+    //-----------------API START-----------------
+
+    /**
+     * Authorize user
+     * @param req {@link LoginReq} with auth data
+     * @return {@link HttpStatus#OK} if auth successful, <br>
+     * {@link HttpStatus#UNAUTHORIZED} otherwise
+     * @author ezuykow
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginReq req) {
         if (authService.login(req.getUsername(), req.getPassword())) {
@@ -33,6 +44,13 @@ public class AuthController {
         }
     }
 
+    /**
+     * Register new user
+     * @param req {@link RegisterReq} with registration data
+     * @return {@link HttpStatus#CREATED} if registration successful, <br>
+     * {@link HttpStatus#BAD_REQUEST} otherwise
+     * @author ezuykow
+     */
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         Role role = req.getRole() == null ? USER : req.getRole();
@@ -42,4 +60,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    //-----------------API END-----------------
+
 }

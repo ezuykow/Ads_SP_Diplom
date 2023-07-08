@@ -29,14 +29,34 @@ public class AdService {
 
     //-----------------API START-----------------
 
+    /**
+     * Return all ads
+     * @return {@link List<Ad>} of {@link Ad}
+     * @author ezuykow
+     */
     public List<Ad> findAll() {
         return repository.findAll();
     }
 
+    /**
+     * Return target ad
+     * @param id id of target ad
+     * @return {@link Optional<Ad>} with target {@link Ad}, <br>
+     * {@link Optional#empty()} if target ad not existed
+     * @author ezuykow
+     */
     public Optional<Ad> findById(int id) {
         return repository.findById(id);
     }
 
+    /**
+     * Create new ad
+     * @param username author's username (email)
+     * @param image new ad's image
+     * @param createAdsDto new ad's data
+     * @return created ad in {@link AdDto} instance
+     * @author ezuykow
+     */
     @Transactional
     public AdDto createAd(String username, MultipartFile image, CreateAdDto createAdsDto) {
         Ad newAd = adMapper.mapCreateAdDtoToAd(createAdsDto);
@@ -49,11 +69,24 @@ public class AdService {
         return adMapper.mapEntityToDto(newAd);
     }
 
+    /**
+     * Create {@link FullAdDto} instance
+     * @param ad target {@link Ad}
+     * @return {@link FullAdDto} instance for target {@link Ad}
+     * @author ezuykow
+     */
     public FullAdDto createFullAd(Ad ad) {
         User author = ad.getAuthor();
         return adMapper.mapAdAndAuthorToFullAdDto(ad, author);
     }
 
+    /**
+     * Edit target ad
+     * @param targetAd target {@link Ad}
+     * @param newData {@link CreateAdDto} with new ad's data
+     * @return edited ad in {@link AdDto} instance
+     * @author ezuykow
+     */
     public AdDto editAd(Ad targetAd, CreateAdDto newData) {
         targetAd.setDescription(newData.getDescription());
         targetAd.setPrice(newData.getPrice());
@@ -62,16 +95,34 @@ public class AdService {
         return adMapper.mapEntityToDto(targetAd);
     }
 
+    /**
+     * Edit ad's image
+     * @param ad target {@link Ad}
+     * @param imageFile {@link MultipartFile} with new image
+     * @return {@code byte[]} - bytes of new image
+     * @author ezuykow
+     */
     @Transactional
     public byte[] editAdImage(Ad ad, MultipartFile imageFile) {
         imageService.uploadAdImage(ad.getPk(), imageFile);
         return imageService.getAdImage(ad.getPk().toString());
     }
 
+    /**
+     * Save ad
+     * @param ad target {@link Ad}
+     * @return saved {@link Ad}
+     * @author ezuykow
+     */
     public Ad save(Ad ad) {
         return repository.save(ad);
     }
 
+    /**
+     * Delete target ad and it's image
+     * @param id id of target ad
+     * @author ezuykow
+     */
     public void deleteById(int id) {
         imageService.deleteAdImage(id);
         repository.deleteById(id);

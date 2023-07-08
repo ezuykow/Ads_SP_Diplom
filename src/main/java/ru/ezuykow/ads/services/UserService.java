@@ -28,6 +28,14 @@ public class UserService {
 
     //-----------------API START-----------------
 
+    /**
+     * Set user's password
+     * @param email target user's email (username)
+     * @param newPasswordDto object with new and current passwords
+     * @return {@code true} if password successfully changed, <br>
+     * {@code false} if current password is incorrect
+     * @author ezuykow
+     */
     public boolean setPassword(String email, NewPassword newPasswordDto) {
         User targetUser = findUserByEmail(email);
         if (encoder.matches(newPasswordDto.getCurrentPassword(), targetUser.getEncodedPassword())) {
@@ -38,31 +46,68 @@ public class UserService {
         return false;
     }
 
+    /**
+     * Return {@link UserDto} of target user
+     * @param email target user's email (username)
+     * @return {@link UserDto} of target user
+     * @author ezuykow
+     */
     public UserDto findUserDtoByEmail(String email) {
         return userMapper.mapEntityToDto(findUserByEmail(email));
     }
 
+    /**
+     * Return {@link User} with target email
+     * @param email target user's email (username)
+     * @return {@link User} with target email
+     * @author ezuykow
+     */
     public User findUserByEmail(String email) {
         return repository.findUserByEmail(email);
     }
 
+    /**
+     * Save user
+     * @param user target {@link User}
+     * @author ezuykow
+     */
     public void save(User user) {
         repository.save(user);
     }
 
+    /**
+     * Save user from {@link RegisterReq} (register request)
+     * @param registerReq register request with new user's data
+     * @param role role of new user
+     * @param encodedPassword new user's encoded password
+     * @author ezuykow
+     */
     public void saveUserFromRegReq(RegisterReq registerReq, Role role, String encodedPassword) {
         repository.save(userMapper.mapRegReqToUser(registerReq, role, encodedPassword));
     }
 
-    public User editUser(String targetEmail, UserDto dto) {
+    /**
+     * Edit user
+     * @param targetEmail target user's email (username)
+     * @param dto {@link UserDto} with user's new data
+     * @return edited user in {@link UserDto} instance
+     * @author ezuykow
+     */
+    public UserDto editUser(String targetEmail, UserDto dto) {
         User targetUser = findUserByEmail(targetEmail);
         targetUser.setFirstName(dto.getFirstName());
         targetUser.setLastName(dto.getLastName());
         targetUser.setPhone(dto.getPhone());
         save(targetUser);
-        return targetUser;
+        return userMapper.mapEntityToDto(targetUser);
     }
 
+    /**
+     * Upload user's avatar
+     * @param targetEmail target user's email (username)
+     * @param image {@link MultipartFile} with avatar
+     * @author ezuykow
+     */
     @Transactional
     public void uploadImage(String targetEmail, MultipartFile image) {
         User targetUser = findUserByEmail(targetEmail);
