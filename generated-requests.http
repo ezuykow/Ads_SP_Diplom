@@ -163,3 +163,61 @@ Authorization: Basic username password
   "pk": 0,
   "text": "fgfjjf"
 }
+
+
+
+
+### ADMIN'S PERMISSIONS DEMO
+
+
+
+###DELETE AD BY ID ADMIN
+DELETE http://localhost:8080/ads/3
+Content-Type: application/json
+Authorization: Basic GOD@GMAIL.COM password
+
+###EDIT AD BY ID ADMIN
+PATCH http://localhost:8080/ads/1
+Content-Type: application/json
+Authorization: Basic GOD@GMAIL.COM password
+
+{
+  "description": "new description",
+  "price": 7777,
+  "title": "new title"
+}
+
+###GET MY ADS ADMIN
+GET http://localhost:8080/ads/me
+Content-Type: application/json
+Authorization: Basic GOD@GMAIL.COM password
+
+###EDIT AD'S IMAGE ADMIN
+PATCH http://localhost:8080/ads/1/image
+Content-Type: multipart/form-data; boundary=NewAdImageBoundary
+Authorization: Basic GOD@GMAIL.COM password
+
+--NewAdImageBoundary
+Content-Disposition: form-data; name="image"; filename="testImage.png"
+Content-Type: image/png
+
+< testImage.png
+--NewAdImageBoundary
+
+### DELETE COMMENT BY ID ADMIN
+DELETE http://localhost:8080/ads/2/comments/3
+Authorization: Basic GOD@GMAIL.COM password
+
+###EDIT COMMENT BY ID ADMIN
+PATCH http://localhost:8080/ads/2/comments/2
+Content-Type: application/json
+Authorization: Basic GOD@GMAIL.COM password
+
+{
+  "author": 0,
+  "authorImage": "string",
+  "authorFirstName": "string",
+  "createdAt": 0,
+  "pk": 0,
+  "text": "fgfjjf"
+}
