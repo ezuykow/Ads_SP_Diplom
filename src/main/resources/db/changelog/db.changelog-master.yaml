@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+     file: db/changelog/scripts/users.sql
+  - include:
+      file: db/changelog/scripts/ads.sql
+  - include:
+      file: db/changelog/scripts/comments.sql
