@@ -1,4 +1,4 @@
-###
+###REGISTER
 POST http://localhost:8080/register
 Content-Type: application/json
 
@@ -11,7 +11,7 @@ Content-Type: application/json
   "role": "USER"
 }
 
-###
+###LOGIN
 POST http://localhost:8080/login
 Content-Type: application/json
 
@@ -20,7 +20,7 @@ Content-Type: application/json
   "password": "password"
 }
 
-###
+###LOGIN2
 POST http://localhost:8080/login
 Content-Type: application/json
 
@@ -29,12 +29,12 @@ Content-Type: application/json
   "password": "pass777"
 }
 
-###
+###GETME
 GET http://localhost:8080/users/me
 Content-Type: application/json
 Authorization: Basic user777 pass777
 
-###
+###EDIT USER
 PATCH http://localhost:8080/users/me
 Content-Type: application/json
 Authorization: Basic username password
@@ -47,7 +47,7 @@ Authorization: Basic username password
   "id": 1
 }
 
-###
+###SET PASS
 POST http://localhost:8080/users/set_password
 Content-Type: application/json
 Authorization: Basic username password1
@@ -57,7 +57,7 @@ Authorization: Basic username password1
   "currentPassword": "password"
 }
 
-###
+###EDIT IMAGE
 PATCH http://localhost:8080/users/me/image
 Content-Type: multipart/form-data; boundary=UserImageBoundary
 Authorization: Basic username password
@@ -69,12 +69,12 @@ Content-Type: image/png
 < testImage.png
 --UserImageBoundary
 
-###
+###GET ALL ADS
 GET http://localhost:8080/ads
 Content-Type: application/json
 Authorization: Basic user777 pass777
 
-###
+###POST AD
 POST http://localhost:8080/ads
 Content-Type: multipart/form-data; boundary=AddAdBoundary
 Authorization: Basic username password
@@ -95,17 +95,17 @@ Content-Type: application/json
 }
 --AddAdBoundary
 
-###
+###GET AD BY ID
 GET http://localhost:8080/ads/2
 Content-Type: application/json
 Authorization: Basic user777 pass777
 
-###
+###DELETE AD BY ID
 DELETE http://localhost:8080/ads/3
 Content-Type: application/json
 Authorization: Basic username password
 
-###
+###EDIT AD BY ID
 PATCH http://localhost:8080/ads/1
 Content-Type: application/json
 Authorization: Basic username password
@@ -116,12 +116,12 @@ Authorization: Basic username password
   "title": "new title"
 }
 
-###
+###GET MY ADS
 GET http://localhost:8080/ads/me
 Content-Type: application/json
 Authorization: Basic username password
 
-###
+###EDIT AD'S IMAGE
 PATCH http://localhost:8080/ads/1/image
 Content-Type: multipart/form-data; boundary=NewAdImageBoundary
 Authorization: Basic username password
@@ -133,7 +133,7 @@ Content-Type: image/png
 < testImage.png
 --NewAdImageBoundary
 
-###COMMENTS
+###POST COMMENT BY AD ID
 POST http://localhost:8080/ads/2/comments
 Content-Type: application/json
 Authorization: Basic user777 pass777
@@ -142,15 +142,15 @@ Authorization: Basic user777 pass777
   "text": "first comment"
 }
 
-###
+### GET COMMETS BY AD ID
 GET http://localhost:8080/ads/2/comments
 Authorization: Basic user777 pass777
 
-###
+### DELETE COMMENT BY ID
 DELETE http://localhost:8080/ads/2/comments/3
 Authorization: Basic username password
 
-###
+###EDIT COMMENT BY ID
 PATCH http://localhost:8080/ads/2/comments/2
 Content-Type: application/json
 Authorization: Basic username password
