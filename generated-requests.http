@@ -169,17 +169,24 @@ Authorization: Basic username password
 
 ### ADMIN'S PERMISSIONS DEMO
 
-
-
-###DELETE AD BY ID ADMIN
-DELETE http://localhost:8080/ads/3
+###LOGIN
+POST http://localhost:8080/login
 Content-Type: application/json
-Authorization: Basic GOD@GMAIL.COM password
+
+{
+  "username": "SU@SU.RU",
+  "password": "12345678"
+}
+
+### DELETE AD BY ID ADMIN
+DELETE http://localhost:8080/ads/1
+Content-Type: application/json
+Authorization: Basic SU@SU.RU 12345678
 
 ###EDIT AD BY ID ADMIN
 PATCH http://localhost:8080/ads/1
 Content-Type: application/json
-Authorization: Basic GOD@GMAIL.COM password
+Authorization: Basic SU@SU.RU 12345678
 
 {
   "description": "new description",
@@ -187,15 +194,10 @@ Authorization: Basic GOD@GMAIL.COM password
   "title": "new title"
 }
 
-###GET MY ADS ADMIN
-GET http://localhost:8080/ads/me
-Content-Type: application/json
-Authorization: Basic GOD@GMAIL.COM password
-
 ###EDIT AD'S IMAGE ADMIN
 PATCH http://localhost:8080/ads/1/image
 Content-Type: multipart/form-data; boundary=NewAdImageBoundary
-Authorization: Basic GOD@GMAIL.COM password
+Authorization: Basic su@su.ru 12345678
 
 --NewAdImageBoundary
 Content-Disposition: form-data; name="image"; filename="testImage.png"
@@ -205,13 +207,13 @@ Content-Type: image/png
 --NewAdImageBoundary
 
 ### DELETE COMMENT BY ID ADMIN
-DELETE http://localhost:8080/ads/2/comments/3
-Authorization: Basic GOD@GMAIL.COM password
+DELETE http://localhost:8080/ads/1/comments/1
+Authorization: Basic SU@SU.RU 12345678
 
 ###EDIT COMMENT BY ID ADMIN
-PATCH http://localhost:8080/ads/2/comments/2
+PATCH http://localhost:8080/ads/1/comments/1
 Content-Type: application/json
-Authorization: Basic GOD@GMAIL.COM password
+Authorization: Basic SU@SU.RU 12345678
 
 {
   "author": 0,
