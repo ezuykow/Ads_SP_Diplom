@@ -104,9 +104,7 @@ public class AdController {
     {
         Optional<Ad> targetAdOpt = adService.findById(adId);
         if (targetAdOpt.isPresent()) {
-           User initiator = userService.findUserByEmail(authentication.getName());
-           if (initiator.getRole() == Role.ADMIN
-                   || initiator.getEmail().equals(targetAdOpt.get().getAuthor().getEmail())) {
+           if (isUserAdminOrAuthor(authentication.getName(), targetAdOpt)) {
                return ResponseEntity.ok(adService.editAd(targetAdOpt.get(), createAdDto));
            }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

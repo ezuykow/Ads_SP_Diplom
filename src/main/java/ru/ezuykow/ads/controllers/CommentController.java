@@ -11,6 +11,7 @@ import ru.ezuykow.ads.dto.ResponseWrapperComment;
 import ru.ezuykow.ads.dto.Role;
 import ru.ezuykow.ads.entities.Comment;
 import ru.ezuykow.ads.entities.User;
+import ru.ezuykow.ads.exceptions.NonExistentCommentException;
 import ru.ezuykow.ads.mappers.CommentMapper;
 import ru.ezuykow.ads.services.AdService;
 import ru.ezuykow.ads.services.CommentService;
@@ -59,7 +60,7 @@ public class CommentController {
      * @author ezuykow
      */
     @GetMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<FullCommentDto> getAllCommentsByAd(
+    public ResponseEntity<FullCommentDto> getCommentByAdAndCommentIds(
             @PathVariable("id") int adId,
             @PathVariable("commentId") int commentId)
     {
@@ -114,9 +115,7 @@ public class CommentController {
     {
         Optional<Comment> targetCommentOpt = commentService.findById(commentId);
         if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-            User initiator = userService.findUserByEmail(authentication.getName());
-            if (initiator.getRole() == Role.ADMIN
-                    || initiator.getEmail().equals(targetCommentOpt.get().getAuthor().getEmail())) {
+            if (isUserAdminOrAuthor(authentication.getName(), targetCommentOpt))  {
                 return ResponseEntity.ok(commentService.editComment(commentId, fullCommentDto));
             }
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -142,9 +141,7 @@ public class CommentController {
     {
         Optional<Comment> targetCommentOpt = commentService.findById(commentId);
         if (isAdExist(adId) && targetCommentOpt.isPresent()) {
-            User initiator = userService.findUserByEmail(authentication.getName());
-            if (initiator.getRole() == Role.ADMIN
-                    || initiator.getEmail().equals(targetCommentOpt.get().getAuthor().getEmail())) {
+            if (isUserAdminOrAuthor(authentication.getName(), targetCommentOpt)) {
                 commentService.deleteById(commentId);
                 return ResponseEntity.ok().build();
             }
@@ -164,5 +161,20 @@ public class CommentController {
      */
     private boolean isAdExist(int adId) {
         return adService.findById(adId).isPresent();
+    }
+
+    /**
+     * Check that user is admin or comment's author
+     * @param targetEmail target user email
+     * @param targetCommentOpt target comment (Optional)
+     * @return {@code true} if user with {@code targetEmail} is admin or author of {@code targetComment}, <br>
+     * {@code false} if not
+     * @author ezuykow
+     */
+    private boolean isUserAdminOrAuthor(String targetEmail, Optional<Comment> targetCommentOpt) {
+        User initiator = userService.findUserByEmail(targetEmail);
+        return initiator.getRole() == Role.ADMIN
+                || initiator.getEmail()
+                .equals(targetCommentOpt.orElseThrow(NonExistentCommentException::new).getAuthor().getEmail());
     }
 }
